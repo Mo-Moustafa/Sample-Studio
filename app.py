@@ -110,7 +110,15 @@ elif menu == 'CSV':
         # st.write('Number of records',len(amplitude_data))
         
 
-
+##To set a title
+        if 'EMG' or 'emg' in file_name:
+            title = ' EMG Signal'
+        elif 'ECG' or 'ecg' in file_name:
+            title = ' ECG Signal'
+        elif 'EEG' or 'eeg' in file_name:
+            title = ' EEG Signal'
+        else:
+            title = ' Signal'
 
 
         # Sample Attributes
@@ -130,7 +138,7 @@ elif menu == 'CSV':
         fig1 = plt.figure(figsize=(10,6))
         plt.xlabel('Time', fontsize=15)
         plt.ylabel('Amplitude', fontsize=15)
-        plt.title("Original Signal")
+        plt.title(f"Original {title}")
         plt.plot(time_data,amplitude_data)
         plt.plot(nT, y2, 'ro')
         plt.grid(True)
@@ -141,7 +149,7 @@ elif menu == 'CSV':
         fig2 = plt.figure(figsize=(10,6))
         plt.xlabel('Time', fontsize=15)
         plt.ylabel('Amplitude', fontsize=15)
-        plt.title("Reconstructed Signal")
+        plt.title(f"Reconstructed {title}")
         plt.plot(nT, y2)
         plt.grid(True)
         st.plotly_chart(fig2)
