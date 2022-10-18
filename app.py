@@ -6,6 +6,32 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 import plotly
+from bokeh.plotting import figure as fg
+
+
+
+
+def signal_ploting_function(titel='',x1=[],y1=[],x2=[],y2=[]):
+
+            line1_timedata=x1
+            line1_valdata=y1
+            line2_timedata=x2
+            line2_valdata=y2
+
+            
+            figure = fg(
+            title=titel,
+            x_axis_label='Time',
+            y_axis_label='Amplitude')
+            figure.line(line1_timedata, line1_valdata,legend_label='signal',line_color='blue',line_width=2)
+            figure.circle(line2_timedata,line2_valdata,legend_label='sample points',color='red', size=5)
+            figure.sizing_mode = 'scale_both'
+            figure.xgrid.grid_line_color = 'darkgray'
+            figure.ygrid.grid_line_color = 'darkgray'
+            st.bokeh_chart(figure, use_container_width=True)
+        
+
+
 
 
 # Sidebar
@@ -48,14 +74,15 @@ elif menu == 'Sine Wave':
 
     # Plotting Original Signal
 
-    fig1 = plt.figure(figsize=(10,6))
-    plt.xlabel('Time', fontsize=15)
-    plt.ylabel('Amplitude', fontsize=15)
-    plt.title("Original Signal")
-    plt.plot(t, y1)
-    plt.grid(True)
-    plt.plot(nT, y2, 'ro') # Sample Points
-    st.plotly_chart(fig1)
+    # fig1 = plt.figure(figsize=(10,6))
+    # plt.xlabel('Time', fontsize=15)
+    # plt.ylabel('Amplitude', fontsize=15)
+    # plt.title("Original Signal")
+    # plt.plot(t, y1)
+    # plt.grid(True)
+    # plt.plot(nT, y2, 'ro') # Sample Points
+    # st.plotly_chart(fig1)
+    signal_ploting_function(f"Original Signal",t,y1,nT,y2)
 
     # Plotting Reconstructed Signal
 
@@ -66,6 +93,7 @@ elif menu == 'Sine Wave':
     plt.plot(nT , y2)
     plt.grid(True)
     st.plotly_chart(fig2)
+    signal_ploting_function(f"Reconstructed Signal",nT,y2)
 
 
 # CSV Page
@@ -135,24 +163,32 @@ elif menu == 'CSV':
 
         # Plotting Original Signal
         
-        fig1 = plt.figure(figsize=(10,6))
-        plt.xlabel('Time', fontsize=15)
-        plt.ylabel('Amplitude', fontsize=15)
-        plt.title(f"Original {title}")
-        plt.plot(time_data,amplitude_data)
-        plt.plot(nT, y2, 'ro')
-        plt.grid(True)
-        st.plotly_chart(fig1)
+        # fig1 = plt.figure(figsize=(10,6))
+        # plt.xlabel('Time', fontsize=15)
+        # plt.ylabel('Amplitude', fontsize=15)
+        # plt.title(f"Original {title}")
+        # plt.plot(time_data,amplitude_data)
+        # plt.plot(nT, y2, 'ro')
+        # plt.grid(True)
+        # st.plotly_chart(fig1)
+        signal_ploting_function(f"Original {title}",time_data,amplitude_data,nT,y2)
+        
+        
 
         # Plotting Reconstructed Signal
 
-        fig2 = plt.figure(figsize=(10,6))
-        plt.xlabel('Time', fontsize=15)
-        plt.ylabel('Amplitude', fontsize=15)
-        plt.title(f"Reconstructed {title}")
-        plt.plot(nT, y2)
-        plt.grid(True)
-        st.plotly_chart(fig2)
+        # fig2 = plt.figure(figsize=(10,6))
+        # plt.xlabel('Time', fontsize=15)
+        # plt.ylabel('Amplitude', fontsize=15)
+        # plt.title(f"Reconstructed {title}")
+        # plt.plot(nT, y2)
+        # plt.grid(True)
+        # st.plotly_chart(fig2)
+        signal_ploting_function(f"Reconstructed {title}",nT,y2)
+
+
+        
+        
 
     else:
         st.write('Awaiting CSV file to be uploaded.')
