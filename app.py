@@ -74,41 +74,77 @@ elif menu == 'CSV':
 
     st.title("CSV Signal")
 
+
+
     # Original Attributes
 
-    data = pd.read_csv('E:\Engineering\Python\EMG_Healthy_Modified_Less_Data.csv')
-    t = data['Time']
-    y1 = data['Value']
+    # data = pd.read_csv('E:\Engineering\Python\EMG_Healthy_Modified_Less_Data.csv')
+    # t = data['Time']
+    # y1 = data['Value']
 
-    # Sample Attributes
-
-    sample_freq = st.slider('Sampling Frequincy', min_value=1, max_value=100, step=1)
-
-    s_rate = sample_freq # sampling frequency
-    T = 1 / s_rate
-    numberOfSamples = 0.305/T
-    calc = round(1200 / numberOfSamples)
-
-    nT = t[0:1200:calc] # Spreading Samples
-    y2 = y1[0:1200:calc]
-
-    # Plotting Original Signal
     
-    fig1 = plt.figure(figsize=(10,6))
-    plt.xlabel('Time', fontsize=15)
-    plt.ylabel('Amplitude', fontsize=15)
-    plt.title("Original Signal")
-    plt.plot(t,y1)
-    plt.plot(nT, y2, 'ro')
-    plt.grid(True)
-    st.plotly_chart(fig1)
+    uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type={"csv", "txt ,xlsx"})
 
-    # Plotting Reconstructed Signal
+    if uploaded_file is not None:
+        input_df = pd.read_csv(uploaded_file)
+        df = input_df.dropna(axis=0,how='any')
+        file_name= uploaded_file.name
 
-    fig2 = plt.figure(figsize=(10,6))
-    plt.xlabel('Time', fontsize=15)
-    plt.ylabel('Amplitude', fontsize=15)
-    plt.title("Reconstructed Signal")
-    plt.plot(nT, y2)
-    plt.grid(True)
-    st.plotly_chart(fig2)
+
+       
+        #st.write(df)  #showing the data frame
+        
+
+        time_data=df[ df.head(0).columns[0]]
+        
+        amplitude_data=df[ df.head(0).columns[1]]
+
+
+
+##To show the maximum points and the lrngth of the file
+
+        # st.write('Maximum time:',time_data.max())
+        # st.write('Number of records',len(time_data))
+
+        # st.write('Maximum value:',amplitude_data.max())
+        # st.write('Number of records',len(amplitude_data))
+        
+
+
+
+
+        # Sample Attributes
+
+        sample_freq = st.slider('Sampling Frequincy', min_value=1, max_value=100, step=1)
+
+        s_rate = sample_freq # sampling frequency
+        T = 1 / s_rate
+        numberOfSamples = 0.305/T
+        calc = round(1200 / numberOfSamples)
+
+        nT = time_data[0:1200:calc] # Spreading Samples
+        y2 = amplitude_data[0:1200:calc]
+
+        # Plotting Original Signal
+        
+        fig1 = plt.figure(figsize=(10,6))
+        plt.xlabel('Time', fontsize=15)
+        plt.ylabel('Amplitude', fontsize=15)
+        plt.title("Original Signal")
+        plt.plot(time_data,amplitude_data)
+        plt.plot(nT, y2, 'ro')
+        plt.grid(True)
+        st.plotly_chart(fig1)
+
+        # Plotting Reconstructed Signal
+
+        fig2 = plt.figure(figsize=(10,6))
+        plt.xlabel('Time', fontsize=15)
+        plt.ylabel('Amplitude', fontsize=15)
+        plt.title("Reconstructed Signal")
+        plt.plot(nT, y2)
+        plt.grid(True)
+        st.plotly_chart(fig2)
+
+    else:
+        st.write('Awaiting CSV file to be uploaded.')
