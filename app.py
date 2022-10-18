@@ -24,7 +24,10 @@ def signal_ploting_function(titel='',x1=[],y1=[],x2=[],y2=[]):
             x_axis_label='Time',
             y_axis_label='Amplitude')
             figure.line(line1_timedata, line1_valdata,legend_label='signal',line_color='blue',line_width=2)
-            figure.circle(line2_timedata,line2_valdata,legend_label='sample points',color='red', size=5)
+
+            if len(line2_timedata) != 0 and len(line2_valdata) != 0:
+             figure.circle(line2_timedata,line2_valdata,legend_label='sample points',color='red', size=5)
+
             figure.sizing_mode = 'scale_both'
             figure.xgrid.grid_line_color = 'darkgray'
             figure.ygrid.grid_line_color = 'darkgray'
