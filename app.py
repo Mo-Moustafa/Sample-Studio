@@ -86,13 +86,13 @@ elif menu == 'Sine Wave':
 
     # Plotting Reconstructed Signal
 
-    fig2 = plt.figure(figsize=(10,6))
-    plt.xlabel('Time', fontsize=15)
-    plt.ylabel('Amplitude', fontsize=15)
-    plt.title("Reconstructed Signal")
-    plt.plot(nT , y2)
-    plt.grid(True)
-    st.plotly_chart(fig2)
+    # fig2 = plt.figure(figsize=(10,6))
+    # plt.xlabel('Time', fontsize=15)
+    # plt.ylabel('Amplitude', fontsize=15)
+    # plt.title("Reconstructed Signal")
+    # plt.plot(nT , y2)
+    # plt.grid(True)
+    # st.plotly_chart(fig2)
     signal_ploting_function(f"Reconstructed Signal",nT,y2)
 
 
