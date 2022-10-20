@@ -11,6 +11,8 @@ from bokeh.plotting import figure as fg
 
 
 
+
+
 def signal_ploting_function(titel='',x1=[],y1=[],x2=[],y2=[]):
 
             line1_timedata=x1
@@ -22,7 +24,10 @@ def signal_ploting_function(titel='',x1=[],y1=[],x2=[],y2=[]):
             figure = fg(
             title=titel,
             x_axis_label='Time',
-            y_axis_label='Amplitude')
+            y_axis_label='Amplitude',
+            tools="pan,wheel_zoom,box_zoom,reset   ,undo ,redo ,save "
+            )
+
             figure.line(line1_timedata, line1_valdata,legend_label='signal',line_color='blue',line_width=2)
 
             if len(line2_timedata) != 0 and len(line2_valdata) != 0:
@@ -32,9 +37,10 @@ def signal_ploting_function(titel='',x1=[],y1=[],x2=[],y2=[]):
             figure.xgrid.grid_line_color = 'darkgray'
             figure.ygrid.grid_line_color = 'darkgray'
             st.bokeh_chart(figure, use_container_width=True)
+            
         
 
-
+st.set_page_config(layout='wide')
 
 
 # Sidebar
@@ -174,7 +180,7 @@ elif menu == 'CSV':
         # plt.plot(nT, y2, 'ro')
         # plt.grid(True)
         # st.plotly_chart(fig1)
-        signal_ploting_function(f"Original {title}",time_data,amplitude_data,nT,y2)
+        # signal_ploting_function(f"Original {title}",time_data,amplitude_data,nT,y2)
         
         
 
@@ -187,9 +193,22 @@ elif menu == 'CSV':
         # plt.plot(nT, y2)
         # plt.grid(True)
         # st.plotly_chart(fig2)
-        signal_ploting_function(f"Reconstructed {title}",nT,y2)
+        # signal_ploting_function(f"Reconstructed {title}",nT,y2)
 
+        col1, col2 = st.columns(2,gap='medium')
+        
+        
 
+        with col1:
+         signal_ploting_function(f"Original {title}",time_data,amplitude_data,nT,y2)
+
+        with col2:
+            signal_ploting_function(f"Reconstructed {title}",nT,y2)
+
+        
+            
+
+        
         
         
 
