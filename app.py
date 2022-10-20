@@ -91,7 +91,7 @@ elif menu == 'Sine Wave':
     # plt.grid(True)
     # plt.plot(nT, y2, 'ro') # Sample Points
     # st.plotly_chart(fig1)
-    signal_ploting_function(f"Original Signal",t,y1,nT,y2)
+    # signal_ploting_function(f"Original Signal",t,y1,nT,y2)
 
     # Plotting Reconstructed Signal
 
@@ -102,7 +102,23 @@ elif menu == 'Sine Wave':
     # plt.plot(nT , y2)
     # plt.grid(True)
     # st.plotly_chart(fig2)
-    signal_ploting_function(f"Reconstructed Signal",nT,y2)
+    # signal_ploting_function(f"Reconstructed Signal",nT,y2)
+
+
+    col1, col2 = st.columns(2,gap='medium')
+        
+        
+
+    with col1:  # Plotting Original Signal
+        signal_ploting_function(f"Original Signal",t,y1,nT,y2)
+
+    with col2:  # Plotting Reconstructed Signal
+        signal_ploting_function(f"Reconstructed Signal",nT,y2)
+
+
+
+
+
 
 
 # CSV Page
@@ -199,10 +215,10 @@ elif menu == 'CSV':
         
         
 
-        with col1:
+        with col1: # Plotting Original Signal
          signal_ploting_function(f"Original {title}",time_data,amplitude_data,nT,y2)
 
-        with col2:
+        with col2:  # Plotting Reconstructed Signal
             signal_ploting_function(f"Reconstructed {title}",nT,y2)
 
         
