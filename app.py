@@ -13,7 +13,7 @@ import random
 import plotly
 import csv
 import os
-
+import math
 
 
 def plot(signal='',x1=[],y1=[],x2=[],y2=[], x3=[] , y3=[], interp = False):
@@ -35,11 +35,25 @@ def plot(signal='',x1=[],y1=[],x2=[],y2=[], x3=[] , y3=[], interp = False):
 
 
 
+def summation_sins(amplitude, frequency):
+    n = len(frequency)
+    t = np.linspace(0, 1, 200)
+    sinewave = np.zeros(len(t))
+    for i in range(n):
+        sinewave += amplitude[i] * np.sin(2 * np.pi * frequency[i] * t)
 
+    return sinewave
 
+def Noise_using_snr(snr, signal):
+
+    sigpower = sum([math.pow(abs(signal[i]), 2) for i in range(len(signal))])
+    sigpower = sigpower/len(signal)
+    noisepower = sigpower/(math.pow(10, snr/10))
+    noise = math.sqrt(noisepower)*(np.random.uniform(-1, 1, size=len(signal)))
+    return noise
 # Sidebar
 
-menu = st.sidebar.radio('menu', options=['Main', 'Sine Wave', 'CSV'])
+menu = st.sidebar.radio('menu', options=['Main', 'Sine Wave', 'CSV','summation','Delete Signal'])
 
 if menu == 'Main':
     st.title('Sampling Studio')
@@ -137,3 +151,55 @@ elif menu == 'CSV':
 
     else:
         st.write('Awaiting CSV file to be uploaded.')
+
+elif menu == 'summation':
+    st.title('summation')
+
+    addcol1,addcol2,addcol3=st.columns(3, gap='medium')
+    X = addcol1.number_input("frequency", step=1)
+    Y = addcol2.number_input("Amplitude", step=1)
+    id_sig = addcol3.number_input("id Signal", step=1)
+
+    if st.button("Add Signal"):
+        if X > 0 and Y > 0:
+            Data = [X, Y, id_sig]
+            if os.path.exists("DataFile.csv"):
+                with open('DataFile.csv', 'a') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(Data)
+
+            else:
+                with open('DataFile.csv', 'a') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(['frequency', "Amplitude", "id"])
+                    writer.writerow(Data)
+
+    if os.path.exists("DataFile.csv"):
+        DataTowCo = pd.read_csv("DataFile.csv")
+        frequency = DataTowCo.iloc[:, 0]
+        Amplitude = DataTowCo.iloc[:, 1]
+        summation_sins(Amplitude, frequency)
+elif menu == 'Delete Signal':
+    st.title('Delete Signal')
+
+    # id=st.number_input("id Signal")
+    id_signal = st.number_input("Please Enter Signal Id")
+
+    if st.button("delete signal"):
+
+        df = pd.read_csv("DataFile.csv")
+
+        df = df[df.id != id_signal]
+
+        # df.column_name != whole string from the cell
+        # now, all the rows with the column: Name and Value: "dog" will be deleted
+
+        df.to_csv("DataFile.csv", index=False)
+        #     # remove_specific_row_from_csv(df, "id", id_signal)
+
+        # delete all signal
+    if st.button("delete All Signals"):
+        if os.path.exists("DataFile.csv"):
+            os.remove("DataFile.csv")
+    else:
+        print("The file does not exist")
