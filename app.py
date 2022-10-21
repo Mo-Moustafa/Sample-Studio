@@ -1,6 +1,6 @@
 from cmath import phase
 from math import ceil
-from re import X
+from re import Frequency_input_box
 from tkinter import CENTER, font
 from turtle import color
 from turtle import title
@@ -88,23 +88,23 @@ elif menu == 'Generation':
     # Summation
 
     addcol1, addcol2, addcol3 = st.columns(3)
-    X = addcol1.number_input("Frequency", step=1)
-    Y = addcol2.number_input("Amplitude", step=1)
+    Frequency_input_box = addcol1.number_input("Frequency", step=1)
+    Amplitude_input_box = addcol2.number_input("Amplitude", step=1)
     id_sig = addcol3.number_input("ID Signal", step=1)
 
     if st.button("Add Signal"):
-        if X > 0 and Y > 0:
-            Data = [X, Y, id_sig]
+        if Frequency_input_box > 0 and Amplitude_input_box > 0:
+            signal_data = [Frequency_input_box, Amplitude_input_box, id_sig]
             if os.path.exists("DataFile.csv"):
                 with open('DataFile.csv', 'a') as f:
                     writer = csv.writer(f)
-                    writer.writerow(Data)
+                    writer.writerow(signal_data)
 
             else:
                 with open('DataFile.csv', 'a') as f:
                     writer = csv.writer(f)
                     writer.writerow(['frequency', "Amplitude", "id"])
-                    writer.writerow(Data)
+                    writer.writerow(signal_data)
 
     # Deletion
     # remove_specific_row_from_csv(df, "id", id_signal)
@@ -119,7 +119,7 @@ elif menu == 'Generation':
         if os.path.exists("DataFile.csv"):
             os.remove("DataFile.csv")
     else:
-        print("The file does not exist")
+        st.write("The file does not exist")
 
     Sample = st.checkbox("Show Sampling")
 
