@@ -18,12 +18,11 @@ import math
 from traitlets import default
 
 
-    
 st.set_page_config(layout='wide')
 
 
 with open('app.css') as fileStyle:
-    st.markdown(f'<style>{fileStyle.read()}</style>',unsafe_allow_html=True)
+    st.markdown(f'<style>{fileStyle.read()}</style>', unsafe_allow_html=True)
 # Functions
 
 # Plotting
@@ -92,8 +91,7 @@ if menu == 'Main':
 elif menu == 'Generation':
     st.title('Generation')
 
-
-    gencol1,gencol2 = st.columns([1,3])
+    gencol1, gencol2 = st.columns([1, 3])
 
     with gencol1:
 
@@ -102,11 +100,11 @@ elif menu == 'Generation':
         # addcol1, addcol2, addcol3 = st.columns(3)
         X = st.number_input("Frequency", step=1)
         Y = st.number_input("Amplitude", step=1)
-        id_sig = st.number_input("Signal ID", step=1)
+        signal_name = st.text_input("Signal name", value="Signal_name")
 
         if st.button("Add Signal"):
-            if X > 0 and Y > 0:
-                Data = [X, Y, id_sig]
+            if X > 0 and Y > 0 and signal_name != "":
+                Data = [X, Y, signal_name]
                 if os.path.exists("DataFile.csv"):
                     with open('DataFile.csv', 'a') as f:
                         writer = csv.writer(f)
@@ -120,32 +118,32 @@ elif menu == 'Generation':
 
         # Deletion
         # remove_specific_row_from_csv(df, "id", id_signal)
-        id_signal = st.number_input("Signal Id")
+        signal_names = pd.read_csv("DataFile.csv").iloc[:, 2]
+        added_signal = st.selectbox(
+            'select signal you want to delete', (signal_names))
         if st.button("delete signal"):
             df = pd.read_csv("DataFile.csv")
-            df = df[df.id != id_signal]
+            df = df[df.id != added_signal]
             df.to_csv("DataFile.csv", index=False)
+
         # delete all signal
-        if st.button("delete All Signals"):
-            if os.path.exists("DataFile.csv"):
-                os.remove("DataFile.csv")
-        else:
-            print("The file does not exist")
+        # if st.button("delete All Signals"):
+        #     if os.path.exists("DataFile.csv"):
+        #         os.remove("DataFile.csv")
+        # else:
+        #     st.write("The file does not exist")
 
         # Sample = st.checkbox("Show Sampling")
         if os.path.exists("DataFile.csv"):
             noiseCheck = st.checkbox("Add Noise")
             if (noiseCheck):
-                snr = st.slider('SNR', min_value=1,max_value=50, step=1, value=50)
+                snr = st.slider('SNR', min_value=1,
+                                max_value=50, step=1, value=50)
             Sample = st.checkbox("Show Sampling")
             if (Sample):
-                sample_freq = st.slider('Sampling Frequency', min_value=1, max_value=100, step=1)
+                sample_freq = st.slider(
+                    'Sampling Frequency', min_value=1, max_value=100, step=1)
                 s_Interpolation = st.checkbox('Show Interpolation')
-
-
-
-
-
 
     with gencol2:
 
@@ -199,7 +197,8 @@ elif menu == 'Generation':
 
                 # Plotting
 
-                plot(f"Original Signal", t, y1, nT, y2, t, y_reconstruction,s_Interpolation)     # Plotting Original Signal
+                plot(f"Original Signal", t, y1, nT, y2, t, y_reconstruction,
+                     s_Interpolation)     # Plotting Original Signal
                 # Plotting Reconstructed Signal
                 simple_plot(f"Reconstructed Signal", t, y_reconstruction)
 
@@ -210,7 +209,7 @@ elif menu == 'CSV':
 
     st.title("Upload Signal")
 
-    csvCol1,csvCol2 = st.columns([1,3])
+    csvCol1, csvCol2 = st.columns([1, 3])
 
     with csvCol1:
 
@@ -234,12 +233,14 @@ elif menu == 'CSV':
 
             # Sample Attributes
 
-            sample_freq = st.slider('Sampling Frequency',min_value=1, max_value=100, step=1)
+            sample_freq = st.slider(
+                'Sampling Frequency', min_value=1, max_value=100, step=1)
 
             s_Interpolation = st.checkbox('Show Interpolation')
             noiseCheck = st.checkbox("Add Noise")
             if (noiseCheck):
-                snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=5)
+                snr = st.slider('SNR', min_value=1,
+                                max_value=50, step=1, value=5)
                 # noise = Noise_using_snr(snr, amplitude_data)
                 # y1 = amplitude_data + noise
 
@@ -260,13 +261,10 @@ elif menu == 'CSV':
                 for x, y in zip(nT, y2):
                     y_reconstruction[i] += y * np.sinc((time_data[i]-x)/T)
 
-
         else:
             st.write('Awaiting CSV file to be uploaded.')
 
-
     with csvCol2:
-
 
         if uploaded_file is not None:
 
@@ -276,6 +274,7 @@ elif menu == 'CSV':
                 noise1 = Noise_using_snr(snr, amplitude_data)
                 amplitude_data = amplitude_data + noise1
 
-            plot(f"Original Signal", time_data, amplitude_data, nT, y2, time_data, y_reconstruction, s_Interpolation)  # Plotting Original Signal
+            plot(f"Original Signal", time_data, amplitude_data, nT, y2, time_data,
+                 y_reconstruction, s_Interpolation)  # Plotting Original Signal
             # Plotting Reconstructed Signal
             simple_plot(f"Reconstructed Signal", time_data, y_reconstruction)
