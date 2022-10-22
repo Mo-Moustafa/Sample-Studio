@@ -97,7 +97,6 @@ elif menu == 'Generation':
 
         # Summation
 
-        # addcol1, addcol2, addcol3 = st.columns(3)
         X = st.number_input("Frequency", step=1)
         Y = st.number_input("Amplitude", step=1)
         signal_name = st.text_input("Signal name", value="Signal_name")
@@ -126,14 +125,6 @@ elif menu == 'Generation':
             df = df[df.id != added_signal]
             df.to_csv("DataFile.csv", index=False)
 
-        # delete all signal
-        # if st.button("delete All Signals"):
-        #     if os.path.exists("DataFile.csv"):
-        #         os.remove("DataFile.csv")
-        # else:
-        #     st.write("The file does not exist")
-
-        # Sample = st.checkbox("Show Sampling")
         if os.path.exists("DataFile.csv"):
             noiseCheck = st.checkbox("Add Noise")
             if (noiseCheck):
@@ -156,10 +147,8 @@ elif menu == 'Generation':
                 y1 = summation_sins(Amplitude, frequency, t)
 
                 # Noise
-                # noiseCheck = st.checkbox("Add Noise")
+
                 if (noiseCheck):
-                    # snr = st.slider('SNR', min_value=1,
-                    #                 max_value=50, step=1, value=50)
                     noise = Noise_using_snr(snr, y1)
                     y1 = y1 + noise
 
@@ -197,8 +186,7 @@ elif menu == 'Generation':
 
                 # Plotting
 
-                plot(f"Original Signal", t, y1, nT, y2, t, y_reconstruction,
-                     s_Interpolation)     # Plotting Original Signal
+                plot(f"Original Signal", t, y1, nT, y2, t, y_reconstruction, s_Interpolation)     # Plotting Original Signal
                 # Plotting Reconstructed Signal
                 simple_plot(f"Reconstructed Signal", t, y_reconstruction)
 
@@ -215,8 +203,7 @@ elif menu == 'CSV':
 
         # Upload CSV
 
-        uploaded_file = st.file_uploader(
-            "Upload your input CSV file", type={"csv", "txt ,xlsx"})
+        uploaded_file = st.file_uploader("Upload your input CSV file", type={"csv"})
 
         if uploaded_file is not None:
             input_df = pd.read_csv(uploaded_file)
@@ -237,14 +224,7 @@ elif menu == 'CSV':
                 'Sampling Frequency', min_value=1, max_value=100, step=1)
 
             s_Interpolation = st.checkbox('Show Interpolation')
-            noiseCheck = st.checkbox("Add Noise")
-            if (noiseCheck):
-                snr = st.slider('SNR', min_value=1,
-                                max_value=50, step=1, value=5)
-                # noise = Noise_using_snr(snr, amplitude_data)
-                # y1 = amplitude_data + noise
 
-                # simple_plot(f"Generated Signal", time_data, y1)
             s_rate = sample_freq  # sampling frequency
             T = 1 / s_rate
 
@@ -253,7 +233,15 @@ elif menu == 'CSV':
             calc = ceil(numberOfRecords / numberOfSamples)
 
             nT = time_data[0:numberOfRecords:calc]  # Spreading Samples
-            y2 = amplitude_data[0:numberOfRecords:calc]
+            y2 = amplitude_data[0:numberOfRecords:calc].to_numpy()
+
+            noiseCheck = st.checkbox("Add Noise")
+            if (noiseCheck):
+                snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=50)
+                noise1 = Noise_using_snr(snr, amplitude_data)
+                noise2 = Noise_using_snr(snr, y2)
+                amplitude_data = amplitude_data + noise1
+                y2 = y2 + noise2
 
             # Sinc Interpolation
             y_reconstruction = np.zeros(len(time_data))
@@ -270,11 +258,6 @@ elif menu == 'CSV':
 
             # Plotting
 
-            if (noiseCheck):
-                noise1 = Noise_using_snr(snr, amplitude_data)
-                amplitude_data = amplitude_data + noise1
-
-            plot(f"Original Signal", time_data, amplitude_data, nT, y2, time_data,
-                 y_reconstruction, s_Interpolation)  # Plotting Original Signal
+            plot(f"Original Signal", time_data, amplitude_data, nT, y2, time_data, y_reconstruction, s_Interpolation)  # Plotting Original Signal
             # Plotting Reconstructed Signal
             simple_plot(f"Reconstructed Signal", time_data, y_reconstruction)
