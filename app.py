@@ -1,6 +1,6 @@
 from cmath import phase
 from math import ceil
-from re import Frequency_input_box
+from re import X
 from tkinter import CENTER, font
 from turtle import color
 from turtle import title
@@ -17,6 +17,13 @@ import math
 
 from traitlets import default
 
+
+    
+st.set_page_config(layout='wide')
+
+
+with open('app.css') as fileStyle:
+    st.markdown(f'<style>{fileStyle.read()}</style>',unsafe_allow_html=True)
 # Functions
 
 # Plotting
@@ -26,7 +33,7 @@ def simple_plot(signal='', x1=[], y1=[]):
     fig = plt.figure(figsize=(1, 5))
     plt.xlabel('Time', fontsize=15)
     plt.ylabel('Amplitude', fontsize=15)
-    plt.title(signal)
+    plt.title(signal, fontsize=25)
     plt.plot(x1, y1)
     plt.grid(True)
     st.plotly_chart(fig, use_container_width=True)
@@ -37,7 +44,7 @@ def plot(signal='', x1=[], y1=[], x2=[], y2=[], x3=[], y3=[], interp=False):
     fig = plt.figure(figsize=(1, 5))
     plt.xlabel('Time', fontsize=15)
     plt.ylabel('Amplitude', fontsize=15)
-    plt.title(signal)
+    plt.title(signal, fontsize=25)
     plt.plot(x1, y1)
     plt.grid(True)
 
@@ -85,105 +92,116 @@ if menu == 'Main':
 elif menu == 'Generation':
     st.title('Generation')
 
-    # Summation
 
-    addcol1, addcol2, addcol3 = st.columns(3)
-    Frequency_input_box = addcol1.number_input("Frequency", step=1)
-    Amplitude_input_box = addcol2.number_input("Amplitude", step=1)
-    id_sig = addcol3.number_input("ID Signal", step=1)
+    gencol1,gencol2 = st.columns([1,3])
 
-    if st.button("Add Signal"):
-        if Frequency_input_box > 0 and Amplitude_input_box > 0:
-            signal_data = [Frequency_input_box, Amplitude_input_box, id_sig]
+    with gencol1:
+
+        # Summation
+
+        # addcol1, addcol2, addcol3 = st.columns(3)
+        X = st.number_input("Frequency", step=1)
+        Y = st.number_input("Amplitude", step=1)
+        id_sig = st.number_input("Signal ID", step=1)
+
+        if st.button("Add Signal"):
+            if X > 0 and Y > 0:
+                Data = [X, Y, id_sig]
+                if os.path.exists("DataFile.csv"):
+                    with open('DataFile.csv', 'a') as f:
+                        writer = csv.writer(f)
+                        writer.writerow(Data)
+
+                else:
+                    with open('DataFile.csv', 'a') as f:
+                        writer = csv.writer(f)
+                        writer.writerow(['frequency', "Amplitude", "id"])
+                        writer.writerow(Data)
+
+        # Deletion
+        # remove_specific_row_from_csv(df, "id", id_signal)
+        id_signal = st.number_input("Signal Id")
+        if st.button("delete signal"):
+            df = pd.read_csv("DataFile.csv")
+            df = df[df.id != id_signal]
+            df.to_csv("DataFile.csv", index=False)
+        # delete all signal
+        if st.button("delete All Signals"):
             if os.path.exists("DataFile.csv"):
-                with open('DataFile.csv', 'a') as f:
-                    writer = csv.writer(f)
-                    writer.writerow(signal_data)
+                os.remove("DataFile.csv")
+        else:
+            print("The file does not exist")
 
-            else:
-                with open('DataFile.csv', 'a') as f:
-                    writer = csv.writer(f)
-                    writer.writerow(['frequency', "Amplitude", "id"])
-                    writer.writerow(signal_data)
-
-    # Deletion
-    # remove_specific_row_from_csv(df, "id", id_signal)
-    id_signal = st.number_input("Please Enter Signal Id")
-    addcol4, addcol5 = st.columns(2)
-    if addcol4.button("delete signal"):
-        df = pd.read_csv("DataFile.csv")
-        df = df[df.id != id_signal]
-        df.to_csv("DataFile.csv", index=False)
-    # delete all signal
-    if addcol5.button("delete All Signals"):
+        # Sample = st.checkbox("Show Sampling")
         if os.path.exists("DataFile.csv"):
-            os.remove("DataFile.csv")
-    else:
-        st.write("The file does not exist")
-
-    Sample = st.checkbox("Show Sampling")
-
-    if os.path.exists("DataFile.csv"):
-        if (not Sample):
-            DataTowCo = pd.read_csv("DataFile.csv")
-            frequency = DataTowCo.iloc[:, 0]
-            Amplitude = DataTowCo.iloc[:, 1]
-            t = np.arange(0, 1, 0.001)
-            y1 = summation_sins(Amplitude, frequency, t)
-            # Noise
             noiseCheck = st.checkbox("Add Noise")
             if (noiseCheck):
-                snr = st.slider('SNR', min_value=1,
-                                max_value=50, step=1, value=50)
-                noise = Noise_using_snr(snr, y1)
-                y1 = y1 + noise
+                snr = st.slider('SNR', min_value=1,max_value=50, step=1, value=50)
+            Sample = st.checkbox("Show Sampling")
+            if (Sample):
+                sample_freq = st.slider('Sampling Frequency', min_value=1, max_value=100, step=1)
+                s_Interpolation = st.checkbox('Show Interpolation')
 
-            simple_plot(f"Generated Signal", t, y1)
 
-        if (Sample):
-            DataTowCo = pd.read_csv("DataFile.csv")
-            frequency = DataTowCo.iloc[:, 0]
-            Amplitude = DataTowCo.iloc[:, 1]
 
-            t = np.arange(0, 1, 0.001)
-            y1 = summation_sins(Amplitude, frequency, t)
 
-            sample_freq = st.slider(
-                'Sampling Frequincy', min_value=1, max_value=100, step=1)
-            s_Interpolation = st.checkbox('Show Interpolation')
 
-            s_rate = sample_freq  # Sampling Frequency
 
-            Ts = 1 / s_rate  # How much time for a full cycle
+    with gencol2:
 
-            # To spread the samples right on the graph
-            nT = np.arange(0, 1, Ts)
+        if os.path.exists("DataFile.csv"):
+            if (not Sample):
+                DataTowCo = pd.read_csv("DataFile.csv")
+                frequency = DataTowCo.iloc[:, 0]
+                Amplitude = DataTowCo.iloc[:, 1]
+                t = np.arange(0, 1, 0.001)
+                y1 = summation_sins(Amplitude, frequency, t)
 
-            y2 = summation_sins(Amplitude, frequency, nT)  # Resampled
+                # Noise
+                # noiseCheck = st.checkbox("Add Noise")
+                if (noiseCheck):
+                    # snr = st.slider('SNR', min_value=1,
+                    #                 max_value=50, step=1, value=50)
+                    noise = Noise_using_snr(snr, y1)
+                    y1 = y1 + noise
 
-            # Noise
-            noiseCheck = st.checkbox("Add Noise")
-            if (noiseCheck):
-                snr = st.slider('SNR', min_value=1,
-                                max_value=50, step=1, value=50)
-                noise1 = Noise_using_snr(snr, y1)
-                noise2 = Noise_using_snr(snr, y2)
-                y1 = y1 + noise1
-                y2 = y2 + noise2
+                simple_plot(f"Generated Signal", t, y1)
 
-            # Sinc Interpolation
+            if (Sample):
+                DataTowCo = pd.read_csv("DataFile.csv")
+                frequency = DataTowCo.iloc[:, 0]
+                Amplitude = DataTowCo.iloc[:, 1]
 
-            y_reconstruction = np.zeros(len(t))
-            for i in range(1, len(t)):
-                for n in range(1, len(nT)):
-                    y_reconstruction[i] += y2[n] * np.sinc((t[i]-nT[n])/Ts)
+                t = np.arange(0, 1, 0.001)
+                y1 = summation_sins(Amplitude, frequency, t)
 
-            # Plotting
+                s_rate = sample_freq  # Sampling Frequency
 
-            plot(f"Original Signal", t, y1, nT, y2, t, y_reconstruction,
-                 s_Interpolation)     # Plotting Original Signal
-            # Plotting Reconstructed Signal
-            plot(f"Reconstructed Signal", t, y_reconstruction)
+                Ts = 1 / s_rate  # How much time for a full cycle
+
+                # To spread the samples right on the graph
+                nT = np.arange(0, 1, Ts)
+
+                y2 = summation_sins(Amplitude, frequency, nT)  # Resampled
+
+                if (noiseCheck):
+                    noise1 = Noise_using_snr(snr, y1)
+                    noise2 = Noise_using_snr(snr, y2)
+                    y1 = y1 + noise1
+                    y2 = y2 + noise2
+
+                # Sinc Interpolation
+
+                y_reconstruction = np.zeros(len(t))
+                for i in range(1, len(t)):
+                    for n in range(1, len(nT)):
+                        y_reconstruction[i] += y2[n] * np.sinc((t[i]-nT[n])/Ts)
+
+                # Plotting
+
+                plot(f"Original Signal", t, y1, nT, y2, t, y_reconstruction,s_Interpolation)     # Plotting Original Signal
+                # Plotting Reconstructed Signal
+                simple_plot(f"Reconstructed Signal", t, y_reconstruction)
 
 
 # CSV Page
@@ -192,59 +210,72 @@ elif menu == 'CSV':
 
     st.title("Upload Signal")
 
-    # Upload CSV
+    csvCol1,csvCol2 = st.columns([1,3])
 
-    uploaded_file = st.file_uploader(
-        "Upload your input CSV file", type={"csv", "txt ,xlsx"})
+    with csvCol1:
 
-    if uploaded_file is not None:
-        input_df = pd.read_csv(uploaded_file)
-        df = input_df.dropna(axis=0, how='any')
-        file_name = uploaded_file.name
+        # Upload CSV
 
-        # Read data
+        uploaded_file = st.file_uploader(
+            "Upload your input CSV file", type={"csv", "txt ,xlsx"})
 
-        time_data = df[df.head(0).columns[0]]
-        amplitude_data = df[df.head(0).columns[1]]
-        time_maximum = time_data.max()
-        time_minimum = time_data.min()
-        numberOfRecords = len(time_data)
+        if uploaded_file is not None:
+            input_df = pd.read_csv(uploaded_file)
+            df = input_df.dropna(axis=0, how='any')
+            file_name = uploaded_file.name
 
-        # Sample Attributes
+            # Read data
 
-        sample_freq = st.slider('Sampling Frequincy',
-                                min_value=1, max_value=100, step=1)
+            time_data = df[df.head(0).columns[0]]
+            amplitude_data = df[df.head(0).columns[1]]
+            time_maximum = time_data.max()
+            time_minimum = time_data.min()
+            numberOfRecords = len(time_data)
 
-        s_Interpolation = st.checkbox('Show Interpolation')
-        noiseCheck = st.checkbox("Add Noise")
-        if (noiseCheck):
-            snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=5)
-            noise = Noise_using_snr(snr, amplitude_data)
-            y1 = amplitude_data + noise
+            # Sample Attributes
 
-            simple_plot(f"Generated Signal", time_data, y1)
-        s_rate = sample_freq  # sampling frequency
-        T = 1 / s_rate
+            sample_freq = st.slider('Sampling Frequency',min_value=1, max_value=100, step=1)
 
-        numberOfSamples = (time_maximum - time_minimum)/T
+            s_Interpolation = st.checkbox('Show Interpolation')
+            noiseCheck = st.checkbox("Add Noise")
+            if (noiseCheck):
+                snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=5)
+                # noise = Noise_using_snr(snr, amplitude_data)
+                # y1 = amplitude_data + noise
 
-        calc = ceil(numberOfRecords / numberOfSamples)
+                # simple_plot(f"Generated Signal", time_data, y1)
+            s_rate = sample_freq  # sampling frequency
+            T = 1 / s_rate
 
-        nT = time_data[0:numberOfRecords:calc]  # Spreading Samples
-        y2 = amplitude_data[0:numberOfRecords:calc]
+            numberOfSamples = (time_maximum - time_minimum)/T
 
-        # Sinc Interpolation
-        y_reconstruction = np.zeros(len(time_data))
-        for i in range(0, len(time_data)-1):
-            for x, y in zip(nT, y2):
-                y_reconstruction[i] += y * np.sinc((time_data[i]-x)/T)
+            calc = ceil(numberOfRecords / numberOfSamples)
 
-        # Plotting
+            nT = time_data[0:numberOfRecords:calc]  # Spreading Samples
+            y2 = amplitude_data[0:numberOfRecords:calc]
 
-        plot(f"Original Signal", time_data, amplitude_data, nT, y2, time_data,
-             y_reconstruction, s_Interpolation)  # Plotting Original Signal
-        # Plotting Reconstructed Signal
-        plot(f"Reconstructed Signal", time_data, y_reconstruction)
+            # Sinc Interpolation
+            y_reconstruction = np.zeros(len(time_data))
+            for i in range(0, len(time_data)-1):
+                for x, y in zip(nT, y2):
+                    y_reconstruction[i] += y * np.sinc((time_data[i]-x)/T)
 
-    else:
-        st.write('Awaiting CSV file to be uploaded.')
+
+        else:
+            st.write('Awaiting CSV file to be uploaded.')
+
+
+    with csvCol2:
+
+
+        if uploaded_file is not None:
+
+            # Plotting
+
+            if (noiseCheck):
+                noise1 = Noise_using_snr(snr, amplitude_data)
+                amplitude_data = amplitude_data + noise1
+
+            plot(f"Original Signal", time_data, amplitude_data, nT, y2, time_data, y_reconstruction, s_Interpolation)  # Plotting Original Signal
+            # Plotting Reconstructed Signal
+            simple_plot(f"Reconstructed Signal", time_data, y_reconstruction)
