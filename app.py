@@ -19,8 +19,8 @@ from traitlets import default
 # Page Layout
 
 st.set_page_config(layout='wide')
-with open('app.css') as fileStyle:
-    st.markdown(f'<style>{fileStyle.read()}</style>', unsafe_allow_html=True)
+# with open('app.css') as fileStyle:
+#     st.markdown(f'<style>{fileStyle.read()}</style>', unsafe_allow_html=True)
 
 # Functions
 # Convert data frame to csv
