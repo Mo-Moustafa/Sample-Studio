@@ -31,33 +31,25 @@ def convert_df_to_csv(df):
     df = df.to_csv(index=False)
     return df.encode('utf-8')
 
+# Plotting
 
-# Plotting 1 function
-
-def simple_plot(signal='', time=[], value=[]):
+def plot(signal='', time=[], value=[], sampleTime=[], sampleValue=[], value_rec=[], hide_original=False, sampling=False ,interp=False, x_axis='Time (s)', y_axis='Amplitude'):
     fig = plt.figure(figsize=(1, 5))
-    plt.xlabel('Time', fontsize=15)
-    plt.ylabel('Amplitude', fontsize=15)
+    plt.xlabel(x_axis, fontsize=17)
+    plt.ylabel(y_axis, fontsize=17)
     plt.title(signal, fontsize=25)
-    plt.plot(time, value)
-    plt.grid(True)
-    st.plotly_chart(fig, use_container_width=True)
+    if(not hide_original):
+        plt.plot(time, value) # Plot oriniganl function
 
-# Plotting multiple functions
-
-def plot(signal='', time=[], value=[], sampleTime=[], sampleValue=[], time_rec=[], value_rec=[], interp=False):
-    fig = plt.figure(figsize=(1, 5))
-    plt.xlabel('Time', fontsize=15)
-    plt.ylabel('Amplitude', fontsize=15)
-    plt.title(signal, fontsize=25)
-    plt.plot(time, value) # Plot oriniganl function
-    plt.grid(True)
-
-    if len(sampleTime) != 0 and len(sampleValue) != 0:
+    if (sampling):
         plt.plot(sampleTime, sampleValue, 'ro')  # Sampling points
 
-    if (interp):
-        plt.plot(time_rec, value_rec, '--')  # Sampling interpulation
+    if (interp and not hide_original):
+        plt.plot(time, value_rec, '--')  # Sampling interpulation
+
+    if (interp and hide_original):
+        plt.plot(time, value_rec)  # Sampling interpulation
+
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -92,7 +84,7 @@ menu = st.sidebar.radio('Menu', options=['Instructions', 'Generate Signal', 'Upl
 if menu == 'Instructions':
     st.title('Sampling Studio')
     st.write('- This is a web app to show signals and sample them with different frequences.')
-    st.write("- From the side bar, you can choose to either generate your own signal or upload a signal from a csv file.")
+    st.write("- From the side bar, you can choose to either generate your own signal of sine waves or upload a signal from a csv file.")
     st.write("- Then you can sample the signal, add noise and see the reconstructed signal.")
 
 
@@ -101,18 +93,18 @@ if menu == 'Instructions':
 elif menu == 'Generate Signal':
     st.title('Generate Signal')
 
-    gencol1, gencol2 = st.columns([1, 3])
+    gencol1,space, gencol2 = st.columns([1,0.2,4])
 
     with gencol1:
 
         # Summation of inputs
 
-        frequency_input = st.number_input("Frequency", step=1)
+        frequency_input = st.number_input("Frequency (Hz)", step=1)
         amplitude_input = st.number_input("Amplitude", step=1)
         signal_name = st.text_input("Signal Name", value="Signal_name")
 
         if st.button("Add Signal"):
-            if frequency_input > 0 and signal_name != "":
+            if frequency_input > 0 and amplitude_input != 0 and signal_name != "":
                 Data = [frequency_input, amplitude_input, signal_name]
                 if os.path.exists("DataFile.csv"):
                     with open('DataFile.csv', 'a') as f:
@@ -136,87 +128,53 @@ elif menu == 'Generate Signal':
             df = df[df.Signal_name != added_signal]
             df.to_csv("DataFile.csv", index=False)
 
-        # Download Signal
-
-        frequency = pd.read_csv("DataFile.csv").iloc[:, 0] 
-        Amplitude = pd.read_csv("DataFile.csv").iloc[:, 1]
-        time = np.arange(0, 1, 0.001)
-        y_signal = summation_sins(Amplitude, frequency, time)
-        dataset = pd.DataFrame({'X': time, 'Y': y_signal})
-        st.download_button(
-            label="Download data as CSV",
-            data=convert_df_to_csv(dataset),
-            file_name='selected_df.csv')
-
         # Noise and Sampling Checkbox
 
-        if os.path.exists("DataFile.csv"):
-            noiseCheck = st.checkbox("Add Noise")
-            if (noiseCheck):
-                snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=50)
-            Sample = st.checkbox("Show Sampling")
-            if (Sample):
-                sample_freq = st.slider('Sampling Frequency', min_value=1, max_value=100, step=1)
-                s_Interpolation = st.checkbox('Show Interpolation')
+        snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=50)
+        sample_freq = st.slider('Sampling Frequency (Hz)', min_value=1, max_value=100, step=1)
+        sampling = st.checkbox('Show Sample Points')  # Sampling CheckBox
+        s_Interpolation = st.checkbox('Show Interpolation')
+        hide_original = st.checkbox('Hide Original Signal')
 
     with gencol2:
 
         # Plotting Signals
 
         if os.path.exists("DataFile.csv"):
-            if (not Sample):
-                DataTowCo = pd.read_csv("DataFile.csv")
-                frequency = DataTowCo.iloc[:, 0]
-                Amplitude = DataTowCo.iloc[:, 1]
-                time = np.arange(0, 1, 0.001)
-                y_signal = summation_sins(Amplitude, frequency, time)
-                dataset = pd.DataFrame({'X': time, 'Y': y_signal})
-                # Noise
-
-                if (noiseCheck):
-                    noise = Noise_using_snr(snr, y_signal)
-                    y_signal = y_signal + noise
-
-                simple_plot(f"Generated Signal", time, y_signal)
 
             # Plotting with sampling
 
-            if (Sample):
-                DataTowCo = pd.read_csv("DataFile.csv")
-                frequency = DataTowCo.iloc[:, 0]
-                Amplitude = DataTowCo.iloc[:, 1]
+            DataTowCo = pd.read_csv("DataFile.csv")
+            frequency = DataTowCo.iloc[:, 0]
+            Amplitude = DataTowCo.iloc[:, 1]
 
-                # Original Attributes
+            # Original Attributes
 
-                time = np.arange(0, 1, 0.001)
-                y_signal = summation_sins(Amplitude, frequency, time)
+            time = np.arange(0, 1, 0.001)
+            y_signal = summation_sins(Amplitude, frequency, time)
 
-                # Sampling Attributes
+            # Sampling Attributes
 
-                sample_rate = sample_freq  # Sampling Frequency
-                sample_periodic_time = 1 / sample_rate  # How much time for a full cycle
-                time_samples = np.arange(0, 1, sample_periodic_time) # To spread the samples right on the graph
-                y_samples = summation_sins(Amplitude, frequency, time_samples)  # Resampled
+            sample_rate = sample_freq  # Sampling Frequency
+            sample_periodic_time = 1 / sample_rate  # How much time for a full cycle
+            time_samples = np.arange(0, 1, sample_periodic_time) # To spread the samples right on the graph
+            y_samples = summation_sins(Amplitude, frequency, time_samples)  # Resampled
 
 
-                # Noise Addittion
-                if (noiseCheck):
-                    noise1 = Noise_using_snr(snr, y_signal)
-                    noise2 = Noise_using_snr(snr, y_samples)
-                    y_signal = y_signal + noise1
-                    y_samples = y_samples + noise2
+            # Noise Addittion
+            noise1 = Noise_using_snr(snr, y_signal)
+            noise2 = Noise_using_snr(snr, y_samples)
+            y_signal = y_signal + noise1
+            y_samples = y_samples + noise2
 
-                # Sinc Interpolation
-                y_reconstruction = np.zeros(len(time))
-                for i in range(0, len(time)):
-                    for n in range(0, len(time_samples)):
-                        y_reconstruction[i] += y_samples[n] * np.sinc((time[i]-time_samples[n])/sample_periodic_time)
+            # Sinc Interpolation
+            y_reconstruction = np.zeros(len(time))
+            for i in range(0, len(time)):
+                for n in range(0, len(time_samples)):
+                    y_reconstruction[i] += y_samples[n] * np.sinc((time[i]-time_samples[n])/sample_periodic_time)
 
-                # Plotting Original Signal, Samples and Interpolation
-                plot(f"Original Signal", time, y_signal, time_samples, y_samples, time, y_reconstruction, s_Interpolation)     # Plotting Original Signal
-                
-                # Plotting Reconstructed Signal
-                simple_plot(f"Reconstructed Signal", time, y_reconstruction)
+            # Plotting Original Signal, Samples and Interpolation
+            plot(f"Signal", time, y_signal, time_samples, y_samples, y_reconstruction, hide_original, sampling, s_Interpolation)     # Plotting Original Signal
 
 
 # CSV Page
@@ -225,19 +183,23 @@ elif menu == 'Upload Signal':
 
     st.title("Upload Signal")
 
-    csvCol1, csvCol2 = st.columns([1, 2])
+    csvCol1, space, csvCol2 = st.columns([1,0.1,2])
 
     with csvCol1:
 
         # Upload CSV
 
-        uploaded_file = st.file_uploader(
-            "Upload your input CSV file", type={"csv"})
+        uploaded_file = st.file_uploader("", type={"csv"})
 
         if uploaded_file is not None:
+
+            file_name = uploaded_file.name
+            file_name = file_name[0:-4]
             input_df = pd.read_csv(uploaded_file)
             df = input_df.dropna(axis=0, how='any')
-            file_name = uploaded_file.name
+
+            x_axis=input_df.iloc[0:0,0].name
+            y_axis=input_df.iloc[0:0,1].name
 
             # Read data
 
@@ -248,9 +210,13 @@ elif menu == 'Upload Signal':
             numberOfRecords = len(time_data)
 
             # Sample Attributes
-
-            sample_freq = st.slider('Sampling Frequency', min_value=1, max_value=100, step=1) # Sampling Freq Slider
+            snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=50)
+            sample_freq = st.slider('Sampling Frequency (Hz)', min_value=1, max_value=100, step=1) # Sampling Freq Slider
+            sampling = st.checkbox('Show Sample Points')  # Sampling CheckBox
             s_Interpolation = st.checkbox('Show Interpolation')  # Interpolation CheckBox
+            hide_original = st.checkbox('Hide Original Signal')
+
+
             sample_rate = sample_freq  # sampling frequency
             sample_periodic_time = 1 / sample_rate
 
@@ -259,20 +225,14 @@ elif menu == 'Upload Signal':
             time_samples = time_data[0:numberOfRecords:steps]  # Spreading Samples
             y_samples = amplitude_data[0:numberOfRecords:steps].to_numpy()
 
-
-            # Adding Noise
-
-            noiseCheck = st.checkbox("Add Noise")
-            if (noiseCheck):
-                snr = st.slider('SNR', min_value=1, max_value=50, step=1, value=50)
-                noise1 = Noise_using_snr(snr, amplitude_data)
-                noise2 = Noise_using_snr(snr, y_samples)
-                amplitude_data = amplitude_data + noise1
-                y_samples = y_samples + noise2
+            noise1 = Noise_using_snr(snr, amplitude_data)
+            noise2 = Noise_using_snr(snr, y_samples)
+            amplitude_data = amplitude_data + noise1
+            y_samples = y_samples + noise2
 
             # Sinc Interpolation
             y_reconstruction = np.zeros(len(time_data))
-            for i in range(0, len(time_data)-1):
+            for i in range(0, len(time_data)):
                 for x, y in zip(time_samples, y_samples):
                     y_reconstruction[i] += y * np.sinc((time_data[i]-x)/sample_periodic_time)
 
@@ -283,7 +243,4 @@ elif menu == 'Upload Signal':
 
         if uploaded_file is not None:
             # Plotting Original Signal, Samples and Interpolation
-            plot(f"Original Signal", time_data, amplitude_data, time_samples, y_samples, time_data, y_reconstruction, s_Interpolation)  # Plotting Original Signal
-        
-            # Plotting Reconstructed Signal
-            simple_plot(f"Reconstructed Signal", time_data, y_reconstruction)
+            plot(file_name, time_data, amplitude_data, time_samples, y_samples, y_reconstruction, hide_original, sampling, s_Interpolation, x_axis, y_axis)  # Plotting Original Signal
