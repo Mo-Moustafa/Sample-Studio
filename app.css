@@ -1,154 +1,16 @@
-/* side bar styling  */
-
-
-.css-163ttbj {
-    background-color: rgba(34, 20, 160, 0.233);
-    background-image: url(background.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-
+.css-u8hs99.exg6vvm14{
+    visibility: collapse;
 }
 
-
-
-/* menu lebal */
-.effi0qh3 {
-    font-size: 30px;
-    color: antiquewhite;
-}
-
-
-/* radio button  lebal in sidebar */
-.st-bz.st-ce.st-cf.st-ae.st-af.st-ag.st-ah.st-ai.st-aj.st-cg.st-ch {
-    font-size: 20px;
-    color: rgb(159, 152, 145);
-    top: -1px;
-
-}
-
-/* change color of radio button */
-.st-bm {
-    background-color: rgba(27, 80, 80, 0.623);
-}
-
-
-/* button close */
-.css-9s5bis.edgvbvh3 {
-    color: rgb(255, 255, 255);
-
-}
-
-
-
-
-/* button close  hover*/
-.css-9s5bis.edgvbvh3:hover {
-    color: rgb(246, 1, 1);
-
-}
-
-/*  End Sidebar styling  */
-
-
-
-
-/* header */
-.css-18ni7ap.e8zbici2 {
-
-    background-image: url('https://www.teahub.io/photos/full/271-2719234_free-photo-backgrounds-web-page-background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-
-
-
-
-/* main  page of plot*/
-.main.css-k1vhr4.egzxvld3 {
-    background-color: rgba(25, 1, 236, 0.5);
-    background-image: url('https://www.teahub.io/photos/full/271-2719234_free-photo-backgrounds-web-page-background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-
-}
-
-
-/* div in the main page plot  */
-.block-container.css-18e3th9.egzxvld2 {
-    /* background-color: rgba(25, 1, 236, 0.407); 
-    small color not header */
-    color: aliceblue;
-
-}
-
-
-
-
-/* the main div of title of each page  */
-.stMarkdown {
-    background: rgba(242, 239, 239, 0);
-
-}
-
-/*  div of main title  */
-.css-zt5igj.e16nr0p32 {
-    color: rgb(251, 250, 251);
-}
-
-/* link befor title */
-.css-eczf16.e16nr0p31 {
-    display: none;
-}
-
-
-
-/* //////////////////////////   generate page  //////////////////////////////////////////////////// */
-
-.css-12w0qpk.e1tzin5v2 label {
-    font-size: 15px;
-    background: rgba(149, 29, 29, 0);
-}
-
-.css-12w0qpk.e1tzin5v2 button {
-    background: black;
-    color: white;
-    border: none;
+.css-po3vlj.exg6vvm15{
     width: 100%;
+    height: 60px;
+    background-color: white;
 }
 
-.css-12w0qpk.e1tzin5v2 checkbox {
-    color: brown;
-}
-
-
-
-/* div of lebal  checkbox  */
-
-.css-1djdyxw.ek41t0m0 {
-    color: rgb(255, 255, 255);
-    font-size: 15px;
-    display: inline;
-}
-
-
-
-
-/* input text in the generate */
-.css-12w0qpk.e1tzin5v2 input {
-    font-size: 15px;
-    ;
-    background: rgba(109, 114, 114, 0.371);
-    display: inline;
-}
-
-/* div all Component of generate */
-.css-12w0qpk.e1tzin5v2 {
-    display: inline-block
-}
-
-/* div of plot  */
-
-.css-1a32fsj.e19lei0e0 {
-    margin-top: 4%;
-    margin-left: 3%;
+.css-8u98yl.exg6vvm0 .css-1cpxqw2.edgvbvh9{
+    position: absolute;
+    width: 50%;
+    height: 50px;
+    border: 2px solid;
 }
