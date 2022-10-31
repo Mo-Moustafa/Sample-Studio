@@ -5,6 +5,7 @@ from tkinter import CENTER, font
 from turtle import color
 from turtle import title
 from lib2to3.pgen2.token import EQEQUAL
+from pyparsing import alphas
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,14 +24,6 @@ with open('app.css') as fileStyle:
     st.markdown(f'<style>{fileStyle.read()}</style>', unsafe_allow_html=True)
 
 # Functions
-# Convert data frame to csv
-
-@st.cache
-def convert_df_to_csv(df):
-    # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    df = df.to_csv(index=False)
-    return df.encode('utf-8')
-
 # Plotting
 
 def plot(signal='', time=[], value=[], sampleTime=[], sampleValue=[], value_rec=[], hide_original=False, sampling=False ,interp=False, x_axis='Time (s)', y_axis='Amplitude'):
@@ -45,11 +38,15 @@ def plot(signal='', time=[], value=[], sampleTime=[], sampleValue=[], value_rec=
     if (sampling):
         plt.plot(sampleTime, sampleValue, 'ro')  # Sampling points
 
+    if (sampling and hide_original and not interp):
+        plt.title("Sampling points", fontsize=25)
+
     if (interp and not hide_original):
         plt.plot(time, value_rec, '--')  # Sampling interpulation
 
     if (interp and hide_original):
-        plt.plot(time, value_rec)  # Sampling interpulation
+        plt.title("Reconstructed Signal",fontsize=25)
+        plt.plot(time, value_rec, 'orange')  # Sampling interpulation
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -112,12 +109,12 @@ with gencol1:
         df.to_csv("DataFile.csv", index=False)
 
 with gencol3:
-    st.write("Sampling")
+    st.write("Noise and Sampling")
     # Noise and Sampling Sliders
     snr = st.slider('SNR', min_value=1, max_value=100, step=1, value=100)
-    sample_freq = st.slider('Sampling Frequency (Hz)', min_value=1, max_value=100, step=1)
+    s_Interpolation = st.checkbox('Show Interpolation', value=True)
     sampling = st.checkbox('Show Samples Points')  # Sampling CheckBox
-    s_Interpolation = st.checkbox('Show Interpolation')
+    sample_freq = st.slider('Sampling Frequency (Hz)', min_value=1, max_value=100, step=1)
     hide_original = st.checkbox('Hide Original Signal')
 
 
@@ -140,11 +137,13 @@ with gencol2:
             time_samples = np.arange(0, 1, sample_periodic_time) # To spread the samples right on the graph
             y_samples = summation_sins(Amplitude, frequency, time_samples)  # Resampled
 
+            # steps = ceil(len(time)/sample_rate)
+            # time_samples = time[::steps] # To spread the samples right on the graph
+            # y_samples = y_signal[::steps]  # Resampled
+
             # Noise Addittion
             noise1 = Noise_using_snr(snr, y_signal)
-            noise2 = Noise_using_snr(snr, y_samples)
             y_signal = y_signal + noise1
-            y_samples = y_samples + noise2
 
             # Sinc Interpolation
             y_reconstruction = np.zeros(len(time))
@@ -153,7 +152,7 @@ with gencol2:
                     y_reconstruction[i] += y_samples[n] * np.sinc((time[i]-time_samples[n])/sample_periodic_time)
 
             # Plotting Original Signal, Samples and Interpolation
-            plot(f"Signal", time, y_signal, time_samples, y_samples, y_reconstruction, hide_original, sampling, s_Interpolation)     # Plotting Original Signal
+            plot(f"", time, y_signal, time_samples, y_samples, y_reconstruction, hide_original, sampling, s_Interpolation)     # Plotting Original Signal
     
     elif uploaded_file is not None:
         upload = True
@@ -183,7 +182,7 @@ with gencol2:
         numberOfSamples = (time_maximum - time_minimum)/sample_periodic_time
         steps = ceil(numberOfRecords / numberOfSamples)
         time_samples = time_data[0:numberOfRecords:steps]  # Spreading Samples
-        y_samples = amplitude_data[0:numberOfRecords:steps].to_numpy()
+        y_samples = amplitude_data[0:numberOfRecords:steps]
 
         # Sinc Interpolation
         y_reconstruction = np.zeros(len(time_data))
