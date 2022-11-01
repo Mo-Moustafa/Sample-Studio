@@ -2,8 +2,9 @@
 
 <h2>you can generate your own signal with different amplitude and frequency </h2>
 <img src="images/generation_1.jpg " >
+<h2>After entering  apmplitude and frequency, click on Add Signal to draw the signal </h2>
 <img src="images/generation_2.jpg " >
-<img src="images/GenerationPage.jpg " >
+<img src="images/generation_3.jpg " >
 <h2> you can add noise to your generated signal with  noise checkbox </h2>
 <img src="images/GenerationPageAddNoise.jpg " >
 <h2> you can sample your generated signal and show the interploation with sample checkbox and interpolation checkbox</h2>
