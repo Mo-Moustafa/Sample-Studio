@@ -10,10 +10,11 @@
 <img src="images/generation_4.jpg " >
 <h2> after interpolation the signal will be reconstruction</h2>
 <img src="images/generation_5.jpg " >
-
-
-<h2> you can add noise to your generated signal with  noise checkbox </h2>
-<img src="images/GenerationPageAddNoise.jpg " >
+<h2> you can hide original signal by checkbox hide orignal signal to show reconstruction </h2>
+<img src="images/generation_6.jpg " >
+<h2> you can add noise to your generated signal by snr slider/h2>
+<img src="images/generation_7.jpg " >
+  
 <h2> you can sample your generated signal and show the interploation with sample checkbox and interpolation checkbox</h2>
 <img src="images/GenerationPageinterploationandSampling.jpg " >
 <h2> you can reconstruct your signal after sampling with Whittaker–Shannon interpolation</h2>
