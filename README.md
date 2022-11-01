@@ -8,7 +8,7 @@
 <img src="images/generation_3.jpg " >
 <h2> sampling by Hz  </h2>
 <img src="images/generation_4.jpg " >
-<h2> Then do interpolation to reconstruction </h2>
+<h2> after interpolation the signal will be reconstruction</h2>
 <img src="images/generation_5.jpg " >
 
 
