@@ -6,6 +6,11 @@
 <img src="images/generation_2.jpg " >
 <h2>For sampling, we have two options for sampling by Hz or Nyquist </h2>
 <img src="images/generation_3.jpg " >
+<h2> sampling by Hz  </h2>
+<img src="images/generation_4.jpg " >
+<h2> Then do interpolation to reconstruction </h2>
+<img src="images/generation_5.jpg " >
+
 
 <h2> you can add noise to your generated signal with  noise checkbox </h2>
 <img src="images/GenerationPageAddNoise.jpg " >
