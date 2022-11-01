@@ -1,6 +1,6 @@
 .main.css-1v3fvcr.egzxvld3{
     margin-top: -50px;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .css-u8hs99.exg6vvm14{
@@ -17,6 +17,6 @@
     position: absolute;
     width: 50%;
     height: 50px;
-    left:0px;
+    left:-2px;
     border: 2px solid;
 }
