@@ -1,5 +1,5 @@
 # Sample-Studio
-<img src="images/EnterPage.jpg " >
+<img src="images/generation_1.jpg " >
 <h2> you can generate your own signal with different summation of amplitudes and frequencies and you can delete specific signals at any time with our drop-down list of added signals </h2>
 <img src="images/GenerationPage.jpg " >
 <h2> you can add noise to your generated signal with  noise checkbox </h2>
