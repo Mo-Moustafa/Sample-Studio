@@ -14,6 +14,10 @@
 <img src="images/generation_6.jpg " >
 <h2> you can add noise to your generated signal by snr slider/h2>
 <img src="images/generation_7.jpg " >
+  <h2>  you can delete any signal at any time by signal`s name </h2>
+  <img src="images/generation_8.jpg " >
+ 
+ 
   
 <h2> you can sample your generated signal and show the interploation with sample checkbox and interpolation checkbox</h2>
 <img src="images/GenerationPageinterploationandSampling.jpg " >
