@@ -2,6 +2,7 @@
 
 <h2>you can generate your own signal with different amplitude and frequency </h2>
 <img src="images/generation_1.jpg " >
+<img src="images/generation_2.jpg " >
 <img src="images/GenerationPage.jpg " >
 <h2> you can add noise to your generated signal with  noise checkbox </h2>
 <img src="images/GenerationPageAddNoise.jpg " >
