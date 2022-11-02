@@ -14,21 +14,18 @@
 <img src="images/generation_6.jpg " >
 <h2> you can add noise to your generated signal by snr slider/h2>
 <img src="images/generation_7.jpg " >
-  <h2>  you can delete any signal at any time by signal`s name </h2>
-  <img src="images/generation_8.jpg " >
- 
- 
-  
-<h2> you can sample your generated signal and show the interploation with sample checkbox and interpolation checkbox</h2>
-<img src="images/GenerationPageinterploationandSampling.jpg " >
-<h2> you can reconstruct your signal after sampling with Whittaker–Shannon interpolation</h2>
-<img src="images/generationPageReconstructed.jpg " >
-<h2> you can upload any signal as csv file<h2>
-<img src="  images/csv browse.jpg" >
-<h2> after uploading your csv file you can show sampled signal , add show noise and show interploation  </h2>
-<img src="  images/interplationUploadcsv.jpg" >
-  <h2>  you can reconstruct your signal after sampling with Whittaker–Shannon interpolation</h2>
-  <img src="images/reconstructuploadsignal.jpg">
+<h2>  you can delete any signal at any time by signal`s name </h2>
+<img src="images/generation_8.jpg " >
+ <h2> you can upload any signal as csv file<h2>
+ <img src="images/upload_1.jpg " >
+ <h2>  after uploading your csv file you can show signal <h2>
+ <img src="images/upload_2.jpg " >
+ <h2> you can add sampling points </h2>
+ <img src="images/upload_3.jpg " >
+<h2>  you can reconstruct your signal after sampling with Whittaker–Shannon interpolation</h2>
+<img src="images/upload_4.jpg " >
+<h2>you can add noise and show interploation  </h2>
+<img src="images/upload_4.jpg " >
   
   
 
