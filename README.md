@@ -25,7 +25,7 @@
 <h2>  you can reconstruct your signal after sampling with Whittaker–Shannon interpolation</h2>
 <img src="images/upload_4.jpg " >
 <h2>you can add noise and show interploation  </h2>
-<img src="images/upload_4.jpg " >
+<img src="images/upload_5.jpg " >
   
   
 
